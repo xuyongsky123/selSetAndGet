@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>单选框复选框填值与选值封装使用示例</title>
+    <script src="http://libs.baidu.com/jquery/1.10.2/jquery.js"></script>
+</head>
+<body>
+    <form id="sexForm">
+        <input type="radio" name="sex" value="male" checked>男
+        <br/>
+        <input type="radio" name="sex" value="female">女
+    </form>
+    <hr/>
+    <form id="selForm">
+        <input type="checkbox" name="sel" value="A">A、哈哈
+        <br/>
+        <input type="checkbox" name="sel" value="B">B、嘿嘿
+        <br/>
+        <input type="checkbox" name="sel" value="C">C、呵呵
+        <br/>
+        <input type="checkbox" name="sel" value="D">D、嘎嘎
+        <br/>
+        <input type="checkbox" name="sel" value="E">E、嘻嘻
+    </form>
+</body>
+<script>
+    //选择复选框组 选择全部记录/取消全部记录
+    function JS_setCheckValue(nameStr, valueStr, fatherObj){
+        if (!fatherObj || typeof(fatherObj)!= "object"){
+            var Checkers = document.getElementsByTagName("input");
+        }else{
+            var Checkers = fatherObj.getElementsByTagName("input");
+        }
+        if (!Checkers) return false;
+
+        var tempArray = [];
+        for (var i=0; i<Checkers.length; i++){
+            if ((Checkers[i].type == "checkbox" || Checkers[i].type == "radio") && Checkers[i].name == nameStr){
+                tempArray.push(Checkers[i]);
+            }
+        }
+        if (tempArray.length <= 0) return false;
+        var nowType = "checkbox";
+        if (tempArray[0].type == "radio"){
+            nowType = "radio"
+        }
+
+        valueStr = valueStr + "";
+        if (valueStr == "true" || valueStr == "false"){
+            if (nowType == "radio"){
+                var setValue = valueStr == "true" ? true : false;
+                if (setValue == true){
+                    tempArray[0].checked = true;
+                }else{
+                    for (var i=0; i<tempArray.length; i++){
+                        tempArray[i].checked = false;
+                    }
+                }
+            }else{
+                for (var i=0; i<tempArray.length; i++){
+                    var setValue = valueStr == "true" ? true : false;
+                    tempArray[i].checked = setValue;
+                }
+            }
+        }else{
+            var compareStr = "," + valueStr + ",";
+            if (nowType == "radio"){
+                var valueArray = compareStr.split(",");
+                compareStr = "," + valueArray[1] + ",";
+            }
+            for (var i=0; i<tempArray.length; i++){
+                var nowValue = "," + tempArray[i].value + ",";
+                if (compareStr.indexOf(nowValue) >= 0){
+                    tempArray[i].checked = true;
+                }else{
+                    tempArray[i].checked = false;
+                }
+            }
+        }
+        return true;
+    }
+
+    //获得选择框(复选框/单选框)选中单元的值
+    //参数 nameStr 求值元素的name属性
+    //参数 fatherObj 需要在哪个DOM元素下执行 如果没有传递则使用document
+    function JS_getCheckValue(nameStr, fatherObj){
+        var Checkers
+        if (!fatherObj || typeof(fatherObj)!= "object"){
+            Checkers = document.getElementsByTagName("input");
+        }else{
+            Checkers = fatherObj.getElementsByTagName("input");
+        }
+        if (!Checkers) return false;
+        var valueStr="";
+        for (var i=0;i<Checkers.length;i++){
+            if (Checkers[i].name==nameStr && Checkers[i].checked==true){
+                valueStr += "," + Checkers[i].value;
+            }
+        }
+        if (valueStr){
+            valueStr=valueStr.substr(1);
+        }
+        return valueStr;
+    }
+</script>
+<script>
+    $(function(){
+        //使用案例
+        $('input[name="sex"]').on('click',function(){
+            var tmp = JS_getCheckValue('sex',document.getElementById('sexForm'));
+            alert('您选择了：' + tmp);
+        });
+        $('input[name="sel"]').on('click',function(){
+            var tmp = JS_getCheckValue('sel',document.getElementById('selForm'));
+            alert('您选择了：' + tmp);
+        });
+
+        //初始化默认选中
+        JS_setCheckValue('sex','female',document.getElementById('sexForm'));
+        JS_setCheckValue('sel','C,E',document.getElementById('selForm'));
+    });
+</script>
+</html>
