@@ -86,7 +86,7 @@
     //参数 nameStr 求值元素的name属性
     //参数 fatherObj 需要在哪个DOM元素下执行 如果没有传递则使用document
     function JS_getCheckValue(nameStr, fatherObj){
-        var Checkers
+        var Checkers;
         if (!fatherObj || typeof(fatherObj)!= "object"){
             Checkers = document.getElementsByTagName("input");
         }else{
